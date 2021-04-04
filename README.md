@@ -19,7 +19,7 @@ G = Gate()
 
 ### Handling Events
 
-Use the **handle** method to attach a listener to a channel.
+Use the **handle** method to attach a listener to a channel.  
 `gate:handle(channel, handler) -> nil`  
 `handler` can be a `function` or another **Gate** instance.
 ```lua
@@ -51,7 +51,7 @@ To pause a channel, use the **pause** method.
 G:pause('stuff') -- 'stuff' events will be queued instead of running
 ```
 
-To resume a paused channel, use the **resume** method.
+To resume a paused channel, use the **resume** method.  
 `gate:resume(channel) -> nil`
 ```lua
 G:emit('stuff', 'abc', 789) -- does nothing
