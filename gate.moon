@@ -24,6 +24,15 @@ class Gate
             Event = table.remove Channel.events, 1 -- { ... }
             Channel.callback unpack Event
 
+    _transformCallback: (Value) =>
+        switch type Value
+            when 'nil' then nil
+            when 'function' then Value 
+            when 'table'
+                if Value.emit
+                    (...) -> Value\emit ...
+                else error 'gate: table must have an \'emit\' method!'
+
     pause: (Name) =>
         (@_getChannel Name).enabled = false
 
@@ -40,7 +49,7 @@ class Gate
 
     handle: (Name, Callback) =>
         Channel = @_getChannel Name
-        Channel.callback = Callback
+        Channel.callback = @_transformCallback Callback
 
         if Callback and Channel.enabled
             @_runChannel Channel

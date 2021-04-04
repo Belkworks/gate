@@ -24,6 +24,22 @@ do
         Channel.callback(unpack(Event))
       end
     end,
+    _transformCallback = function(self, Value)
+      local _exp_0 = type(Value)
+      if 'nil' == _exp_0 then
+        return nil
+      elseif 'function' == _exp_0 then
+        return Value
+      elseif 'table' == _exp_0 then
+        if Value.emit then
+          return function(...)
+            return Value:emit(...)
+          end
+        else
+          return error('gate: table must have an \'emit\' method!')
+        end
+      end
+    end,
     pause = function(self, Name)
       (self:_getChannel(Name)).enabled = false
     end,
@@ -40,7 +56,7 @@ do
     end,
     handle = function(self, Name, Callback)
       local Channel = self:_getChannel(Name)
-      Channel.callback = Callback
+      Channel.callback = self:_transformCallback(Callback)
       if Callback and Channel.enabled then
         return self:_runChannel(Channel)
       end
