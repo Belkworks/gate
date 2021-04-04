@@ -19,9 +19,6 @@ do
       return NewChannel
     end,
     _runChannel = function(self, Channel)
-      if not (Channel.callback) then
-        return 
-      end
       while Channel.enabled and Channel.callback and #Channel.events > 0 do
         local Event = table.remove(Channel.events, 1)
         Channel.callback(unpack(Event))

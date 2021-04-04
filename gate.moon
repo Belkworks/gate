@@ -20,7 +20,6 @@ class Gate
         NewChannel
 
     _runChannel: (Channel) =>
-        return unless Channel.callback
         while Channel.enabled and Channel.callback and #Channel.events > 0
             Event = table.remove Channel.events, 1 -- { ... }
             Channel.callback unpack Event
