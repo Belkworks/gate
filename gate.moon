@@ -38,3 +38,10 @@ class Gate
 	clear: (Name) =>
 		Channel = @_getChannel Name
 		Channel.events = {}
+
+	handle: (Name, Callback) =>
+		Channel = @_getChannel Name
+		Channel.callback = Callback
+
+		if Callback and Channel.enabled
+			@_runChannel Channel
