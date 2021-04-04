@@ -13,7 +13,7 @@ class Gate
 
 		NewChannel =
 			callback: nil
-			enabled: false
+			enabled: true
 			events: {}
 
 		@channels[Name] = NewChannel
