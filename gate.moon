@@ -45,3 +45,9 @@ class Gate
 
 		if Callback and Channel.enabled
 			@_runChannel Channel
+
+	emit: (Name, ...) =>
+		Channel = @_getChannel Name
+		if Channel.callback and Channel.enabled
+			Channel.callback ...
+		else table.insert Channel.events, { ... }
