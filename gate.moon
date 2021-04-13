@@ -43,6 +43,12 @@ class Gate
         if Channel.callback
             @_runChannel Channel
 
+    flush: (Name) =>
+    	Channel = @_getChannel Name
+    	return if Channel.enabled
+    	@resume Name
+    	@pause Name
+
     clear: (Name) =>
         Channel = @_getChannel Name
         Channel.events = {}

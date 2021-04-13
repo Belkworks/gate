@@ -50,6 +50,14 @@ do
         return self:_runChannel(Channel)
       end
     end,
+    flush = function(self, Name)
+      local Channel = self:_getChannel(Name)
+      if Channel.enabled then
+        return 
+      end
+      self:resume(Name)
+      return self:pause(Name)
+    end,
     clear = function(self, Name)
       local Channel = self:_getChannel(Name)
       Channel.events = { }
