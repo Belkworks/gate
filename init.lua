@@ -19,10 +19,15 @@ do
       return NewChannel
     end,
     _runChannel = function(self, Channel)
+      if Channel.running then
+        return 
+      end
+      Channel.running = true
       while Channel.enabled and Channel.callback and #Channel.events > 0 do
         local Event = table.remove(Channel.events, 1)
-        Channel.callback(unpack(Event))
+        pcall(Channel.callback, unpack(Event))
       end
+      Channel.running = false
     end,
     _transformCallback = function(self, Value)
       local _exp_0 = type(Value)
@@ -71,13 +76,10 @@ do
     end,
     emit = function(self, Name, ...)
       local Channel = self:_getChannel(Name)
-      if Channel.callback and Channel.enabled then
-        return Channel.callback(...)
-      else
-        return table.insert(Channel.events, {
-          ...
-        })
-      end
+      table.insert(Channel.events, {
+        ...
+      })
+      return self:_runChannel(Channel)
     end
   }
   _base_0.__index = _base_0
@@ -97,65 +99,5 @@ do
   })
   _base_0.__class = _class_0
   Gate = _class_0
-end
-do
-  local _class_0
-  local _parent_0 = Gate
-  local _base_0 = {
-    _runChannel = function(self, Channel)
-      if Channel.running then
-        return 
-      end
-      if Channel.enabled and Channel.callback and #Channel.events > 0 then
-        local Event = table.remove(Channel.events, 1)
-        local done
-        done = function()
-          Channel.running = false
-          return self:_runChannel(Channel)
-        end
-        Channel.running = true
-        return Channel.callback(done, unpack(Event))
-      end
-    end,
-    emit = function(self, Name, ...)
-      local Channel = self:_getChannel(Name)
-      table.insert(Channel.events, {
-        ...
-      })
-      return self:_runChannel(Channel)
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, ...)
-      return _class_0.__parent.__init(self, ...)
-    end,
-    __base = _base_0,
-    __name = "Async",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  Gate.Async = _class_0
 end
 return Gate

@@ -20,9 +20,14 @@ class Gate
         NewChannel
 
     _runChannel: (Channel) =>
+        return if Channel.running
+        Channel.running = true
+
         while Channel.enabled and Channel.callback and #Channel.events > 0
             Event = table.remove Channel.events, 1 -- { ... }
-            Channel.callback unpack Event
+            pcall Channel.callback, unpack Event
+
+        Channel.running = false
 
     _transformCallback: (Value) =>
         switch type Value
@@ -59,25 +64,6 @@ class Gate
 
         if Callback and Channel.enabled
             @_runChannel Channel
-
-    emit: (Name, ...) =>
-        Channel = @_getChannel Name
-        if Channel.callback and Channel.enabled
-            Channel.callback ...
-        else table.insert Channel.events, { ... }
-
-class Gate.Async extends Gate
-    _runChannel: (Channel) =>
-        return if Channel.running
-        if Channel.enabled and Channel.callback and #Channel.events > 0
-            Event = table.remove Channel.events, 1 -- { ... }
-
-            done = ->
-                Channel.running = false
-                @_runChannel Channel
-
-            Channel.running = true
-            Channel.callback done, unpack Event
 
     emit: (Name, ...) =>
         Channel = @_getChannel Name
