@@ -80,6 +80,9 @@ do
         ...
       })
       return self:_runChannel(Channel)
+    end,
+    Destroy = function(self)
+      self.channels = { }
     end
   }
   _base_0.__index = _base_0

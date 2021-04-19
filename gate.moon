@@ -70,4 +70,7 @@ class Gate
         table.insert Channel.events, { ... }
         @_runChannel Channel
 
+    Destroy: =>
+        @channels = {}
+
 Gate
